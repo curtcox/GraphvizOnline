@@ -154,9 +154,13 @@
       }
     }
 
+    function removeClass(name) {
+      reviewer.classList.remove(name);
+    }
+
     function show_error(e) {
       show_status("error", 500);
-      reviewer.classList.remove("working");
+      removeClass("working");
       reviewer.classList.add("error");
 
       var message = e;
@@ -194,18 +198,18 @@
 
     function setWorking() {
       reviewer.classList.add("working");
-      reviewer.classList.remove("error");
+      removeClass("error");
     }
 
     function setDone() {
       show_status("done", 500);
-      reviewer.classList.remove("working");
-      reviewer.classList.remove("error");
+      removeClass("working");
+      removeClass("error");
     }
 
     function clearStatus() {
-      reviewer.classList.remove("working");
-      reviewer.classList.remove("error");
+      removeClass("working");
+      removeClass("error");
     }
 
     function freshWorker() {
@@ -243,18 +247,18 @@
       worker.postMessage(params);
     }
     
+    function removeSelector(name) {
+      var selector = reviewer.querySelector(name);
+      if (selector) {
+        reviewer.removeChild(selector);
+      }
+    }
+
     function updateOutput(result) {
       console.log("updateOutput");
       console.log(result);
-      var text = reviewer.querySelector("#text");
-      if (text) {
-        reviewer.removeChild(text);
-      }
-
-      var a = reviewer.querySelector("a");
-      if (a) {
-        reviewer.removeChild(a);
-      }
+      removeSelector("#text");
+      removeSelector("a");
 
       if (!result) {
         return;
