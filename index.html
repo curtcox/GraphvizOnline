@@ -170,6 +170,10 @@
       errorEl.appendChild(document.createTextNode(message));
     }
 
+    function documentSelection() {
+        return document.getSelection();
+    }
+
     function copyToClipboard(str) {
       const el = document.createElement('textarea');
       el.value = str;
@@ -177,16 +181,13 @@
       el.style.position = 'absolute';
       el.style.left = '-9999px';
       document.body.appendChild(el);
-      const selected =
-        document.getSelection().rangeCount > 0
-          ? document.getSelection().getRangeAt(0)
-          : false;
+      const selected = documentSelection().rangeCount > 0 ? documentSelection().getRangeAt(0) : false;
       el.select();
       var result = document.execCommand('copy')
       document.body.removeChild(el);
       if (selected) {
-        document.getSelection().removeAllRanges();
-        document.getSelection().addRange(selected);
+        documentSelection().removeAllRanges();
+        documentSelection().addRange(selected);
       }
       return result;
     };
@@ -235,7 +236,7 @@
     function renderGraph() {
       setWorking();
       freshWorker();
-      worker.addEventListener("message", function (e) { on_WorkerMessage(e);   }, false);
+      worker.addEventListener("message", function (e) { on_WorkerMessage(e);  }, false);
       worker.addEventListener('error',   function (e) { show_error(e.detail); }, false);
 
       show_status("rendering...");
@@ -252,6 +253,10 @@
       if (selector) {
         reviewer.removeChild(selector);
       }
+    }
+
+    function editorSession() {
+        return editor.getSession();
     }
 
     function updateOutput(result) {
@@ -271,18 +276,18 @@
       text.appendChild(document.createTextNode(result));
       reviewer.appendChild(text);
 
-      updateState()
+      updateState();
     }
 
-    editor.getSession().setMode("ace/mode/javascript");
-    editor.getSession().on("change", function () {
+    editorSession().setMode("ace/mode/javascript");
+    editorSession().on("change", function () {
       clearTimeout(lastHD);
       lastHD = setTimeout(renderGraph, 200);
     });
 
     window.onpopstate = function(event) {
       if (event.state != null && event.state.content != undefined) {
-        editor.getSession().setValue(decodeURIComponent(event.state.content));
+        editorSession().setValue(decodeURIComponent(event.state.content));
       }
     };
 
