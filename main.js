@@ -13,7 +13,7 @@
   function editorSession()   { return editor.getSession(); }
 
   function updateState() {
-    var content = encodeURIComponent(editorSession().getDocument().getValue());
+    var content = encodeURI(editorSession().getDocument().getValue());
     history.pushState({"content": content}, "", "#" + content)
   }
 
@@ -39,7 +39,7 @@
 
     worker = new Worker("worker.js");
   }
-  
+
   function on_WorkerMessage(e) {
     log("on_WorkerMessage");
     log(e);
@@ -58,7 +58,7 @@
     log(params);
     worker.postMessage(params);
   }
-  
+
   function removeSelector(name) {
     var selector = reviewer.querySelector(name);
     if (selector) {
@@ -90,7 +90,7 @@
 
   window.onpopstate = function(event) {
     if (event.state != null && event.state.content != undefined) {
-      editorSession().setValue(decodeURIComponent(event.state.content));
+      editorSession().setValue(decodeURI(event.state.content));
     }
   };
 
@@ -101,11 +101,11 @@
         return i;
       }
     }
-    
+
     return -1;
   };
 
   /* come from sharing */
-  editorSession().setValue(decodeURIComponent(location.hash.substring(1)));
+  editorSession().setValue(decodeURI(location.hash.substring(1)));
   renderGraph();
 })(document);
