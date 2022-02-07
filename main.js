@@ -4,27 +4,13 @@
 
   //http://stackoverflow.com/a/10372280/398634
   window.URL = window.URL || window.webkitURL;
-  var el_stetus = document.getElementById("status"),
-    t_stetus = -1,
-    reviewer = document.getElementById("review"),
+  var reviewer = document.getElementById("review"),
     editor = ace.edit("editor"),
     lastHD = -1,
-    worker = null,
-    errorEl = document.querySelector("#error");
+    worker = null;
 
   function removeClass(name) { reviewer.classList.remove(name); }
   function editorSession()   { return editor.getSession(); }
-
-  function show_error(e) {
-    removeClass("working");
-    reviewer.classList.add("error");
-
-    var message = e;
-    while (errorEl.firstChild) {
-      errorEl.removeChild(errorEl.firstChild);
-    }
-    errorEl.appendChild(document.createTextNode(message));
-  }
 
   function updateState() {
     var content = encodeURIComponent(editorSession().getDocument().getValue());
@@ -65,9 +51,7 @@
     setWorking();
     freshWorker();
     worker.addEventListener("message", function (e) { on_WorkerMessage(e);  }, false);
-    worker.addEventListener('error',   function (e) { show_error(e.detail); }, false);
-
-    var params = {
+    const params = {
       "source": editorSession().getDocument().getValue(),
       "id": new Date().toJSON(),
     };
