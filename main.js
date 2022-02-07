@@ -22,11 +22,6 @@
     removeClass("error");
   }
 
-  function setDone() {
-    removeClass("working");
-    removeClass("error");
-  }
-
   function clearStatus() {
     removeClass("working");
     removeClass("error");
@@ -43,7 +38,7 @@
   function on_WorkerMessage(e) {
     log("on_WorkerMessage");
     log(e);
-    setDone();
+    clearStatus();
     updateOutput(e.data);
   }
 
@@ -82,6 +77,10 @@
     updateState();
   }
 
+  function setEditorState(uri) {
+    editorSession().setValue(decodeURI(uri));
+  }
+
   editorSession().setMode("ace/mode/javascript");
   editorSession().on("change", function () {
     clearTimeout(lastHD);
@@ -90,7 +89,7 @@
 
   window.onpopstate = function(event) {
     if (event.state != null && event.state.content != undefined) {
-      editorSession().setValue(decodeURI(event.state.content));
+      setEditorState(event.state.content);
     }
   };
 
@@ -106,6 +105,6 @@
   };
 
   /* come from sharing */
-  editorSession().setValue(decodeURI(location.hash.substring(1)));
+  setEditorState(location.hash.substring(1));
   renderGraph();
 })(document);
