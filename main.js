@@ -108,10 +108,6 @@
     removeSelector("#text");
     removeSelector("a");
 
-    if (!result) {
-      return;
-    }
-
     clearStatus();
 
     var text = document.createElement("div");
