@@ -9,22 +9,11 @@
     lastHD = -1,
     worker = null;
 
-  function removeClass(name) { reviewer.classList.remove(name); }
   function editorSession()   { return editor.getSession(); }
 
   function updateState() {
     var content = encodeURI(editorSession().getDocument().getValue());
     history.pushState({"content": content}, "", "#" + content)
-  }
-
-  function setWorking() {
-    reviewer.classList.add("working");
-    removeClass("error");
-  }
-
-  function clearStatus() {
-    removeClass("working");
-    removeClass("error");
   }
 
   function freshWorker() {
@@ -38,12 +27,10 @@
   function on_WorkerMessage(e) {
     log("on_WorkerMessage");
     log(e);
-    clearStatus();
     updateOutput(e.data);
   }
 
   function renderGraph() {
-    setWorking();
     freshWorker();
     worker.addEventListener("message", function (e) { on_WorkerMessage(e);  }, false);
     const params = {
@@ -61,19 +48,30 @@
     }
   }
 
+  function removeExistingOutput() {
+    removeSelector("#text");
+    removeSelector("a");
+  }
+
+  function addNewOutput(result) {
+    const text = document.createElement("div");
+    text.id = "text";
+    const lines = formatResultLines(result);
+    text.appendChild(document.createTextNode(lines));
+    reviewer.appendChild(text);
+  }
+
+  function formatResultLines(result) {
+    return result.map(function(line,index) {
+      return "#" + (index + 1) + " " + line + "\n";
+    }).join('');
+  }
+
   function updateOutput(result) {
     log("updateOutput");
     log(result);
-    removeSelector("#text");
-    removeSelector("a");
-
-    clearStatus();
-
-    var text = document.createElement("div");
-    text.id = "text";
-    text.appendChild(document.createTextNode(result));
-    reviewer.appendChild(text);
-
+    removeExistingOutput();
+    addNewOutput(result);
     updateState();
   }
 

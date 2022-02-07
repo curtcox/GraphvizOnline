@@ -18,6 +18,6 @@ function imports() {
 function execute_text(source) {
     var f = imports() + "; return " + source + ";";
     log(f);
-    return Function(f)();
+    return [ Function(f)() ];
 }
 
