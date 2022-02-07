@@ -40,7 +40,7 @@
   }
 
   function updateState() {
-    var content = encodeURIComponent(editor.getSession().getDocument().getValue());
+    var content = encodeURIComponent(editorSession().getDocument().getValue());
     history.pushState({"content": content}, "", "#" + content)
   }
 
@@ -71,11 +71,6 @@
   function on_WorkerMessage(e) {
     log("on_WorkerMessage");
     log(e);
-    if (typeof e.data.error !== "undefined") {
-      var event = new CustomEvent("error", {"detail": new Error(e.data.error.message)});
-      worker.dispatchEvent(event);
-      return
-    }
     setDone();
     updateOutput(e.data);
   }
@@ -86,9 +81,8 @@
     worker.addEventListener("message", function (e) { on_WorkerMessage(e);  }, false);
     worker.addEventListener('error',   function (e) { show_error(e.detail); }, false);
 
-    show_status("rendering...");
     var params = {
-      "source": editor.getSession().getDocument().getValue(),
+      "source": editorSession().getDocument().getValue(),
       "id": new Date().toJSON(),
     };
     log(params);
@@ -142,7 +136,6 @@
   };
 
   /* come from sharing */
-  const params = new URLSearchParams(location.search.substring(1));
-  log(params);
-
+  editorSession().setValue(decodeURIComponent(location.hash.substring(1)));
+  renderGraph();
 })(document);
