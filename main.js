@@ -12,23 +12,10 @@
     worker = null,
     errorEl = document.querySelector("#error");
 
-  function show_status(text, hide) {
-    log(text);
-    hide = hide || 0;
-    clearTimeout(t_stetus);
-    el_stetus.innerHTML = text;
-    if (hide) {
-      t_stetus = setTimeout(function () {
-        el_stetus.innerHTML = "";
-      }, hide);
-    }
-  }
-
   function removeClass(name) { reviewer.classList.remove(name); }
   function editorSession()   { return editor.getSession(); }
 
   function show_error(e) {
-    show_status("error", 500);
     removeClass("working");
     reviewer.classList.add("error");
 
@@ -50,7 +37,6 @@
   }
 
   function setDone() {
-    show_status("done", 500);
     removeClass("working");
     removeClass("error");
   }

@@ -10,27 +10,18 @@ body {
     bottom: 0;
     right: 50%;
     left: 0;
-    background: greenyellow;
+    background: white;
 }
 
 #review {
     margin: 0;
     position: absolute;
-    top: 50px;
+    top: 0;
     bottom: 0;
     right: 0;
     left: 50%;
     overflow: scroll;
-    background: lightgray;
-}
-
-#status {
-    width: 100%;
-    position: fixed;
-    bottom: 0;
-    display: block;
-    color: pink;
-    z-index: 999;
+    background: wheat;
 }
 
 #review #text {
