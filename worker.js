@@ -1,6 +1,7 @@
+function log(x) { console.log("worker :" + x); }
+
 self.onmessage = function(e) {
-    console.log("worker ");
-    console.log(e);
+    log(e);
     var source = e.data.source;
     var result = execute_text(source);
     self.postMessage(result);
@@ -16,7 +17,7 @@ function imports() {
 
 function execute_text(source) {
     var f = imports() + "; return " + source + ";";
-    console.log(f);
+    log(f);
     return Function(f)();
 }
 
