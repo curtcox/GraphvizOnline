@@ -34,7 +34,7 @@
     freshWorker();
     worker.addEventListener("message", function (e) { on_WorkerMessage(e);  }, false);
     const params = {
-      "source": editorSession().getDocument().getValue(),
+      "source": editorSession().getDocument().getValue().split(/\r?\n/),
       "id": new Date().toJSON(),
     };
     log(params);
@@ -63,8 +63,8 @@
 
   function formatResultLines(result) {
     return result.map(function(line,index) {
-      return "#" + (index + 1) + " " + line + "\n";
-    }).join('');
+      return "#" + (index + 1) + " " + line;
+    }).join("\n");
   }
 
   function updateOutput(result) {
