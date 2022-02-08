@@ -11,9 +11,25 @@
 
   function editorSession()   { return editor.getSession(); }
 
+  function encodeStateURI(text) {
+    return encodeURI(text.replaceAll('\n',';'));
+  }
+
+  function decodeStateURI(uri) {
+    return decodeURI(uri.replaceAll(';','\n'));
+  }
+
   function updateState() {
-    var content = encodeURI(editorSession().getDocument().getValue());
+    var content = encodeStateURI(getEditorState());
     history.pushState({"content": content}, "", "#" + content)
+  }
+
+  function getEditorState() {
+    return editorSession().getDocument().getValue();
+  }
+
+  function setEditorState(uri) {
+    editorSession().setValue(decodeStateURI(uri));
   }
 
   function freshWorker() {
@@ -34,7 +50,7 @@
     freshWorker();
     worker.addEventListener("message", function (e) { on_WorkerMessage(e);  }, false);
     const params = {
-      "source": editorSession().getDocument().getValue().split(/\r?\n/),
+      "source": getEditorState().split(/\r?\n/),
       "id": new Date().toJSON(),
     };
     log(params);
@@ -75,14 +91,10 @@
     updateState();
   }
 
-  function setEditorState(uri) {
-    editorSession().setValue(decodeURI(uri));
-  }
-
   editorSession().setMode("ace/mode/javascript");
   editorSession().on("change", function () {
     clearTimeout(lastHD);
-    lastHD = setTimeout(renderGraph, 200);
+    lastHD = setTimeout(renderGraph, 100);
   });
 
   window.onpopstate = function(event) {
