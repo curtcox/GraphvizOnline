@@ -12,11 +12,11 @@
   function editorSession()   { return editor.getSession(); }
 
   function encodeStateURI(text) {
-    return encodeURI(text.replaceAll('\n',';'));
+    return encodeURI(text.replaceAll('\n',';').replaceAll(' ','_'));
   }
 
   function decodeStateURI(uri) {
-    return decodeURI(uri.replaceAll(';','\n'));
+    return decodeURI(uri.replaceAll(';','\n').replaceAll('_',' '));
   }
 
   function updateState() {
