@@ -13,10 +13,19 @@ function execute_lines(lines) {
     
     for (i = 0; i < lines.length; i++) {
         text = text + lines[i] + "\n";
-        results[i] = execute_text(text);
+        results[i] = execute_text(with_prior_results(text,results));
     }
 
     return results;
+}
+
+function with_prior_results(text,results) {
+    for (i = 0; i < results.length; i++) {
+        const resultName = '#' + (i+1);
+        const resultValue = results[i];
+        text = text.replaceAll(resultName,resultValue);
+    }
+    return text;
 }
 
 function import_prop(prop) {
