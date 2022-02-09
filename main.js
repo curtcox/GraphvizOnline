@@ -92,6 +92,7 @@
   }
 
   editorSession().setMode("ace/mode/javascript");
+  editorSession().setUseWorker(false);
   editorSession().on("change", function () {
     clearTimeout(lastHD);
     lastHD = setTimeout(renderGraph, 100);
