@@ -9,11 +9,8 @@ self.onmessage = function(e) {
 
 function execute_lines(lines) {
     var results = [];
-    var text = "";
-    
     for (i = 0; i < lines.length; i++) {
-        text = text + lines[i] + "\n";
-        results[i] = execute_text(with_prior_results(text,results));
+        results[i] = execute_text(with_prior_results(lines[i],results));
     }
 
     return results;
