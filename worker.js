@@ -39,6 +39,10 @@ function imports() {
 function execute_text(text) {
     const f = imports() + "; return " + text + ";";
     log(f);
-    return Function(f)()
+    try {
+        return Function(f)()
+    } catch (e) {
+        console.error(e);
+    }
 }
 
