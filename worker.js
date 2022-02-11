@@ -1,3 +1,5 @@
+// The worker performs all of the calculation and returns the results or errors.
+
 function log(x) { console.log("worker :" + x); }
 
 self.onmessage = function(e) {
@@ -9,11 +11,19 @@ self.onmessage = function(e) {
 
 function execute_lines(lines) {
     var results = [];
+    var assignments = '';
     for (i = 0; i < lines.length; i++) {
-        results[i] = execute_text(with_prior_results(lines[i],results));
+        const line = lines[i];
+        results[i] = execute_line(assignments,with_prior_results(line,results));
+        if (assignment(line)) {
+            assignments = assignments + '\n' + line;
+        }
     }
-
     return results;
+}
+
+function assignment(line) {
+    return line.includes('=');
 }
 
 function with_prior_results(text,results) {
@@ -33,13 +43,14 @@ function imports() {
     return Object.getOwnPropertyNames(Math).map(import_prop).join('; ');
 }
 
-function execute_text(text) {
-    const f = imports() + "; return " + text + ";";
+function execute_line(assignments,line) {
+    const f = imports() + ";" + assignments + "; return " + line + ";";
     log(f);
     try {
         return Function(f)()
     } catch (e) {
         console.error(e);
+        return e;
     }
 }
 

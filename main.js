@@ -1,3 +1,4 @@
+// Connects everything. editor <-> URL editor -> worker -> reviewer 
 (function (document) {
 
   function log(x) { console.log(x); }
@@ -102,17 +103,6 @@
     if (event.state != null && event.state.content != undefined) {
       setEditorState(event.state.content);
     }
-  };
-
-  // Since apparently HTMLCollection does not implement the oh so convenient array functions
-  HTMLOptionsCollection.prototype.indexOf = function(name) {
-    for (let i = 0; i < this.length; i++) {
-      if (this[i].value == name) {
-        return i;
-      }
-    }
-
-    return -1;
   };
 
   /* come from sharing */
