@@ -80,6 +80,9 @@ function line_to_execute(assignments,line) {
 }
 
 function execute_line(assignments,line) {
+    if (line.trim()==='') {
+        return '';
+    }
     if (function_assignment(line)) {
         return function_name(line);
     }
