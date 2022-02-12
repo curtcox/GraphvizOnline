@@ -13,13 +13,20 @@ function execute_lines(lines) {
     var results = [];
     var assignments = '';
     for (i = 0; i < lines.length; i++) {
-        const line = lines[i];
+        const line = without_comment(lines[i]);
         results[i] = execute_line(assignments,with_prior_results(line,results));
         if (assignment(line)) {
             assignments = assignments + '\n' + expanded_line(line);
         }
     }
     return results;
+}
+
+function without_comment(line) {
+    if (line.includes('//')) {
+        return line.split('//')[0];
+    }
+    return line;
 }
 
 function assignment(line) {
