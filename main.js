@@ -47,7 +47,7 @@
     updateOutput(e.data);
   }
 
-  function renderGraph() {
+  function calculateResults() {
     freshWorker();
     worker.addEventListener("message", function (e) { on_WorkerMessage(e);  }, false);
     const params = {
@@ -96,7 +96,7 @@
   editorSession().setUseWorker(false);
   editorSession().on("change", function () {
     clearTimeout(lastHD);
-    lastHD = setTimeout(renderGraph, 100);
+    lastHD = setTimeout(calculateResults, 100);
   });
 
   window.onpopstate = function(event) {
@@ -107,5 +107,5 @@
 
   /* come from sharing */
   setEditorState(location.hash.substring(1));
-  renderGraph();
+  calculateResults();
 })(document);

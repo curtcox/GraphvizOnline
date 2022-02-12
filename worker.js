@@ -16,7 +16,7 @@ function execute_lines(lines) {
         const line = lines[i];
         results[i] = execute_line(assignments,with_prior_results(line,results));
         if (assignment(line)) {
-            assignments = assignments + '\n' + line;
+            assignments = assignments + '\n' + expanded_line(line);
         }
     }
     return results;
@@ -24,6 +24,14 @@ function execute_lines(lines) {
 
 function assignment(line) {
     return line.includes('=');
+}
+
+function function_assignment(line) {
+    if (!assignment(line)) {
+        return false;
+    }
+    const left_side = line.split('=')[0];
+    return left_side.includes('(') && left_side.includes(')');
 }
 
 function with_prior_results(text,results) {
@@ -43,8 +51,32 @@ function imports() {
     return Object.getOwnPropertyNames(Math).map(import_prop).join('; ');
 }
 
+function expanded_line(line) {
+    return function_assignment(line) ? expanded_function_assignment(line) : line;
+}
+
+function function_name(line)   { return line.split('(')[0]; }
+function function_params(line) { return line.split('(')[1].split(')')[0]; }
+function function_body(line)   { return line.split('=')[1]; }
+
+//       sqr(x) = x * x
+// const sqr = function(x) { return x * x }
+function expanded_function_assignment(line) {
+    const   name = function_name(line);
+    const params = function_params(line);
+    const   body = function_body(line);
+    return 'const ' + name + ' = function(' + params + ')' + '{ return ' + body + '; }';
+}
+
+function line_to_execute(assignments,line) {
+    return imports() + ";" + assignments + "; return " + expanded_line(line) + ";";
+}
+
 function execute_line(assignments,line) {
-    const f = imports() + ";" + assignments + "; return " + line + ";";
+    if (function_assignment(line)) {
+        return function_name(line);
+    }
+    const f = line_to_execute(assignments,line);
     log(f);
     try {
         return Function(f)()
@@ -53,4 +85,3 @@ function execute_line(assignments,line) {
         return e;
     }
 }
-
